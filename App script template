@@ -1,0 +1,32 @@
+//Google app script code to handle the backend request and send a verification code to the email provided from the email the script is hosted on
+function doPost(e) {
+    try {
+        const payload = JSON.parse(e.postData.contents);
+
+        const recipientMail = payload.email;
+        const code = payload.code;
+
+        if (!recipientMail || !code) {
+            throw new Error('Missing Mail and/or code')
+        }
+        const timestamp = new Date();
+        const subject = "Verification Code";
+        const body = `Hello,\n\nYour verification code is: ${code}\n\nGenerated on: ${timestamp.toLocaleString()} and expires in the next 2 minuted`;
+        MailApp.sendEmail(recipientMail, subject, body);
+
+        return ontentService
+            .createTextOutput(JSON.stringify({
+                status: 'success',
+                message: 'Code sent to mail successfully'
+            }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+    catch (error) {
+        return ContentService
+            .createTextOutput(JSON.stringify({
+                status: 'error',
+                message: err.message
+            }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+}
