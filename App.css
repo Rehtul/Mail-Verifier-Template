@@ -1,0 +1,109 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mainview{
+  height: 100dvh;
+  display: grid;
+  place-content: center;
+  /* padding: auto; */
+  /* text-align: center; */
+}
+
+.maincontainer{
+  /* outline: 1px solid black; */
+  margin: 0 auto;
+  width: 100%;
+  padding: 10%;
+  border-radius: .4em;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+
+.forminputelement{
+  width: 94%;
+  padding: 2%;
+  margin: 3% 0%;
+  font-family: arial;
+  font-size: .9em;
+  border: none;
+  outline: 1px solid #a1a1a1;
+  border-radius: .3em;
+}
+
+.introheader{
+  font-family: arial;
+}
+
+.formbutton{
+  outline: 1px solid transparent;
+  border: none;
+  width: 100%;
+  height: 2.5em;
+  margin: 1% 0%;
+  border-radius: .3em;
+  font-family: arial;
+  /* color: white; */
+  /* background-color: rgb(30, 182, 45); */
+  background-color: white;
+  color: black;
+  outline: 1px solid rgb(65, 65, 65);
+}
+
+.formbutton:not(:disabled):hover{
+  transition: all ease-in-out 350ms;
+  background-color: #18A558;
+  color: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
+.formbutton:disabled{
+  background-color: white;
+  color: #a1a1a1;
+  border: none;
+  outline: none;
+  cursor: none;
+}
+
+.iconcontainer{
+  text-align: center;
+}
+
+.confirmeddisplay{
+  width: 100%;
+  font-family: arial;
+}
