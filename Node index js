@@ -1,0 +1,109 @@
+const express = require('express');
+const cors = require('cors');
+
+const port = 3001;
+
+const app = express();
+app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+}));
+
+const CODE_TTL_MS = 5 * 60 * 1000;
+const codes = new Map();
+
+function codeGenerator() {
+    const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    const randomLetter = () =>
+        LETTERS[Math.floor(Math.random() * LETTERS.length)];
+
+    const randomDigit = () =>
+        Math.floor(Math.random() * 10);
+
+    return [
+        randomLetter(),
+        randomDigit(),
+        randomLetter(),
+        "-",
+        randomDigit(),
+        randomLetter(),
+        randomDigit()
+    ].join("");
+}
+
+let storedCode = null;
+
+async function sendEmailCode(passedmail, passedcode) {
+    try {
+        const url = '//your google apps script url here//';
+
+        const request = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: passedmail,
+                code: passedcode,
+            }),
+        });
+
+        const data = await request.json();
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+app.post('/request-code', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email || typeof email !== "string") {
+        return res.status(400).send({ message: "Invalid email" });
+    }
+
+    const code = codeGenerator();
+
+    const emailSent = await sendEmailCode(email, code);
+    // if (!emailSent) {
+    //     return res.status(502).send({ message: "Failed to send email" });
+    // }
+
+    codes.set(email, {
+        code,
+        expiresAt: Date.now() + CODE_TTL_MS
+    });
+
+    res.send({
+        message: "Verification code sent"
+    });
+});
+
+app.post('/confirm-code', (req, res) => {
+    const { email, code } = req.body;
+
+    const record = codes.get(email);
+
+    if (!record) {
+        return res.status(400).send({ message: "No code requested" });
+    }
+
+    if (Date.now() > record.expiresAt) {
+        codes.delete(email);
+        return res.status(410).send({ message: "Code expired" });
+    }
+
+    if (code !== record.code) {
+        return res.status(401).send({ message: "Invalid code" });
+    }
+
+    codes.delete(email);
+    res.send({ message: "Code confirmed" });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
